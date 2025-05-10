@@ -37,10 +37,28 @@ io.on("connection", (socket)=>{
         const user = await User.find({userId:userId}).exec()
         socket.emit("afterSignIn", user)
     })
+    
 
     socket.on("roomConnect", async (roomName) => {
         const roomMessages = await Message.find({room: roomName}).exec()
+        socket.join(roomName)
+        console.log(roomMessages)
         socket.emit("oldRoomMessages", roomMessages)
+    })
+
+    socket.on("joinRoom", async ({ userId, roomName }) => {
+        const users = await User.find({userId:userId}).exec();
+        const user = users[0]
+        console.log(user)
+        if (!user.rooms.includes(roomName)) {
+            user.rooms.push(roomName)
+            await user.save()
+        }
+        const messages = await Message.find({ room: roomName }).exec()
+        console.log(messages)
+        socket.join(roomName)
+        socket.emit("joinedRoom", { roomName, messages })
+      
     })
 
     socket.on("sendMessage", async (messageData)=>{

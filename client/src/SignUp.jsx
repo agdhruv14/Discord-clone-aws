@@ -1,10 +1,9 @@
 import { Amplify } from "aws-amplify"
 import { autoSignIn, confirmSignIn, signUp, confirmSignUp, signIn, getCurrentUser } from "aws-amplify/auth"
-import outputs from "../amplify_outputs.json"
+
 import { useEffect, useState } from "react"
 import { io } from "socket.io-client"
 
-Amplify.configure(outputs)
 
 const socket = io("http://localhost:3000")
 
